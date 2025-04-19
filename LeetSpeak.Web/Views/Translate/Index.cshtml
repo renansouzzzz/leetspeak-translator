@@ -1,0 +1,333 @@
+﻿@{
+    ViewData["Title"] = "LeetSpeak Translator";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card bg-dark-gray border-primary mb-4">
+            <div class="card-header bg-dark border-primary">
+                <h2 class="h4 mb-0"><i class="fas fa-exchange-alt me-2"></i>Translator</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control bg-darker text-light"
+                              id="inputText"
+                              style="height: 150px"
+                              placeholder="Type text here..."></textarea>
+                    <label for="inputText" class="text-muted">Original text</label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button id="translateBtn" class="btn btn-primary-gradient px-4 py-2">
+                        <span id="btnText">Translate</span>
+                        <span id="loadingSpinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+                    </button>
+
+                    <div class="d-flex align-items-center text-muted">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small id="characterCount">0/1000 carac</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- output -->
+        <div id="resultContainer" class="card bg-dark-gray border-primary mb-4" style="display: none;">
+            <div class="card-header bg-dark border-primary d-flex justify-content-between align-items-center">
+                <h3 class="h5 mb-0"><i class="fas fa-code me-2"></i>Output</h3>
+                <button id="copyBtn" class="btn btn-sm btn-outline-primary">
+                    <i class="far fa-copy me-1"></i>Copy
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label text-muted">Original:</label>
+                    <div class="p-3 bg-darker rounded" id="originalText"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-muted">LeetSpeak:</label>
+                    <div class="p-3 bg-darker rounded font-monospace text-leet" id="translatedText"></div>
+                </div>
+
+                <div class="text-end text-muted">
+                    <small>Translate to: <span id="translationDate"></span></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="card bg-dark-gray border-primary">
+            <div class="card-header bg-dark border-primary">
+                <h3 class="h5 mb-0"><i class="fas fa-history me-2"></i>History</h3>
+            </div>
+            <div class="card-body">
+                <div id="historyContainer" class="list-group">
+                    <!-- items to AJAX -->
+                </div>
+                <div class="text-center mt-3">
+                    <button id="loadMoreBtn" class="btn btn-outline-primary btn-sm" style="display: none;">
+                        Show more
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const MAX_CHARS = 1000;
+            const HISTORY_LIMIT = 5;
+
+            const $inputText = $('#inputText');
+            const $translateBtn = $('#translateBtn');
+            const $historyContainer = $('#historyContainer');
+
+            $inputText.on('input', updateCharacterCount);
+            $translateBtn.click(handleTranslation);
+            $('#copyBtn').click(copyTranslatedText);
+
+            function updateCharacterCount() {
+                const count = $(this).val().length;
+                $('#characterCount').text(`${count}/${MAX_CHARS} chars`);
+                $('#characterCount').toggleClass('text-danger', count > MAX_CHARS);
+            }
+
+            window.loadHistory = async function() {
+                try {
+                    showHistoryLoading();
+
+                    const response = await fetch('@Url.Action("GetRecentHistory", "Translate")');
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const data = await response.json();
+                    console.log("Dados recebidos:", data);
+
+                    const items = normalizeToArray(data);
+                    renderHistoryItems(items);
+
+                } catch (error) {
+                    console.error("Error loading history:", error);
+                    showHistoryError();
+                }
+            };
+
+            function normalizeToArray(data) {
+                if (Array.isArray(data)) return data;
+                if (data?.translations) return data.translations;
+                if (data?.items) return data.items;
+                if (data?.originalText) return [data];
+                return [];
+            }
+
+            async function handleTranslation() {
+                const text = $inputText.val().trim();
+                
+                if (!validateInput(text)) return;
+                
+                toggleLoading(true);
+                
+                try {
+                    const response = await sendTranslationRequest(text);
+                    
+                    if (response.success) {
+                        displayTranslationResult(response);
+                        await loadHistory();
+                    } else {
+                        showAlert(response.error || 'Translation failed', 'danger');
+                    }
+                } catch (error) {
+                    showAlert(error.responseJSON?.error || 'Communication error', 'danger');
+                } finally {
+                    toggleLoading(false);
+                }
+            }
+
+            async function loadHistory() {
+                try {
+                    showHistoryLoading();
+
+                    const response = await fetch('@Url.Action("GetRecentHistory", "Translate")');
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const items = await response.json();
+
+                    console.log("Dados recebidos:", items);
+
+                    if (!items || items.length === 0) {
+                        showEmptyHistoryMessage();
+                        return;
+                    }
+
+                    renderHistoryItems(items);
+
+                } catch (error) {
+                    console.error("Error loading history:", error);
+                    showHistoryError();
+                }
+            }
+
+            function validateInput(text) {
+                if (!text) {
+                    showAlert('Please enter some text', 'warning');
+                    return false;
+                }
+                if (text.length > MAX_CHARS) {
+                    showAlert(`Text exceeds ${MAX_CHARS} character limit`, 'warning');
+                    return false;
+                }
+                return true;
+            }
+
+            async function sendTranslationRequest(text) {
+                return await $.ajax({
+                    url: '@Url.Action("Translate", "Translate")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ text }),
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    }
+                });
+            }
+
+            function displayTranslationResult(response) {
+                $('#originalText').text(response.original);
+                $('#translatedText').text(response.translated);
+                $('#translationDate').text(response.date);
+                $('#resultContainer').show();
+            }
+
+            function copyTranslatedText() {
+                navigator.clipboard.writeText($('#translatedText').text());
+                $(this).html('<i class="fas fa-check me-1"></i>Copied!');
+                setTimeout(() => $(this).html('<i class="far fa-copy me-1"></i>Copy'), 2000);
+            }
+
+            function toggleLoading(show) {
+                $('#btnText').text(show ? 'Translating...' : 'Translate');
+                $('#loadingSpinner').toggleClass('d-none', !show);
+                $translateBtn.prop('disabled', show);
+            }
+
+            function showAlert(message, type) {
+                const alert = $(`
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+                $('.row.justify-content-center').prepend(alert);
+                setTimeout(() => alert.alert('close'), 5000);
+            }
+
+            function showHistoryLoading() {
+                $historyContainer.html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-2">Loading history...</p>
+                    </div>
+                `);
+            }
+
+            function renderHistoryItems(items) {
+                const container = $('#historyContainer');
+                container.empty();
+
+                if (!items || items.length === 0) {
+                    showEmptyHistoryMessage();
+                    return;
+                }
+
+                items.forEach(item => {
+                    try {
+                        const historyItem = $(`
+                            <div class="list-group-item bg-darker border-primary mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">${formatDate(item.translationDate)}</small>
+                                    <button class="btn btn-sm btn-outline-primary btn-reuse"
+                                            data-text="${escapeHtml(item.originalText)}"
+                                            title="Reuse this text">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-2 text-white">${escapeHtml(item.originalText)}</div>
+                                <div class="mt-1 font-monospace text-leet">${escapeHtml(item.translatedText)}</div>
+                            </div>
+                        `);
+                        container.append(historyItem);
+                    } catch (e) {
+                        console.error("Erro ao renderizar item:", item, e);
+                    }
+                });
+
+                setupReuseButtons();
+            }
+
+            function setupReuseButtons() {
+                $('.btn-reuse').off('click').on('click', function() {
+                    const text = $(this).data('text');
+                    $('#inputText').val(text).trigger('input');
+                    $('html, body').animate({
+                        scrollTop: $('#inputText').offset().top - 20
+                    }, 300);
+                });
+            }
+
+            function showEmptyHistoryMessage() {
+                $historyContainer.html(`
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-history fa-2x mb-3"></i>
+                        <p>Your translation history is empty</p>
+                        <small>Translations you make will appear here</small>
+                    </div>
+                `);
+            }
+
+            function showHistoryError() {
+                $historyContainer.html(`
+                    <div class="text-center py-4 text-danger">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <p>Failed to load history</p>
+                        <button class="btn btn-sm btn-outline-secondary mt-2" onclick="loadHistory()">
+                            <i class="fas fa-sync-alt"></i> Try Again
+                        </button>
+                    </div>
+                `);
+            }
+
+            function formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch {
+                    return dateString;
+                }
+            }
+
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            window.loadHistory();
+        });
+
+    </script>
+}

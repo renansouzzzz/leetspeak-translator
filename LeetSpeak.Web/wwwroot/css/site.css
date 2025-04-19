@@ -1,0 +1,98 @@
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-dark-gray: #2d2d2d;
+    --bg-darker: #252525;
+    --primary-color: #6e48aa;
+    --primary-dark: #4b3080;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Roboto', sans-serif;
+}
+
+.font-monospace {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.bg-dark-gray {
+    background-color: var(--bg-dark-gray);
+}
+
+.bg-darker {
+    background-color: var(--bg-darker);
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.text-leet {
+    color: #8bc34a;
+}
+
+.btn-primary-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    transition: all 0.3s;
+}
+
+    .btn-primary-gradient:hover {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+textarea.form-control {
+    resize: none;
+    border: 1px solid #444;
+}
+
+    textarea.form-control:focus {
+        background-color: var(--bg-darker);
+        color: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(110, 72, 170, 0.25);
+    }
+
+.list-group-item {
+    border-radius: 0.25rem !important;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+    .list-group-item:hover {
+        background-color: #333 !important;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#resultContainer {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+}

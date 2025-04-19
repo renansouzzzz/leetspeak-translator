@@ -1,0 +1,43 @@
+﻿public class TranslationService : ITranslationService
+{
+    private readonly ITranslationRepository _translationRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ITranslationResultAdapter _adapter;
+    private readonly IFunTranslationApiService _apiService;
+    private readonly ILogger<TranslationService> _logger;
+
+    public TranslationService(
+        ITranslationRepository translationRepository,
+        IUserRepository userRepository,
+        ITranslationResultAdapter adapter,
+        IFunTranslationApiService apiService,
+        ILogger<TranslationService> logger)
+    {
+        _translationRepository = translationRepository;
+        _userRepository = userRepository;
+        _adapter = adapter;
+        _apiService = apiService;
+        _logger = logger;
+    }
+
+    public async Task<TranslationResult> TranslateToLeetSpeakAsync(string text, string userId)
+    {
+        _logger.LogInformation($"Translating text: '{text}' for user {userId}");
+
+        var apiResponse = await _apiService.TranslateToLeetSpeakAsync(text);
+
+        _logger.LogInformation($"API Response: {apiResponse.RawResponse}");
+
+        var translation = new Translation
+        {
+            OriginalText = text,
+            TranslatedText = apiResponse.TranslatedText,
+            TranslationDate = DateTime.UtcNow,
+            UserId = userId
+        };
+
+        await _translationRepository.AddAsync(translation);
+
+        return _adapter.AdaptToResult(translation);
+    }
+}
