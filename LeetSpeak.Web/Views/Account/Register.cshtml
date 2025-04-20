@@ -84,7 +84,6 @@
 
 @section Styles {
     <style>
-        /* Estilos compartilhados com o login */
         .vh-80 {
             min-height: 80vh;
         }
@@ -126,7 +125,6 @@
             color: #fff;
         }
 
-        /* Estilos específicos para a logo */
         .leet-logo {
             font-size: 1.8rem;
             letter-spacing: 2px;
@@ -150,7 +148,6 @@
             color: #00aaff !important;
         }
 
-        /* Estilo específico para o formulário de registro */
         .password-strength {
             height: 3px;
             background-color: #1a1a1a;
@@ -170,7 +167,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Script para mostrar força da senha
         document.getElementById('Password').addEventListener('input', function() {
             const password = this.value;
             const strengthBar = document.getElementById('password-strength-bar');

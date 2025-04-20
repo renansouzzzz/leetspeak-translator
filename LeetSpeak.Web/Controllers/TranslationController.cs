@@ -45,8 +45,8 @@ public class TranslateController : Controller
 
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro durante a tradução");
-            return Json(new { success = false, error = "Erro interno durante a tradução" });
+            _logger.LogError(ex, "Error during traslate");
+            return Json(new { success = false, error = "Error during translate" });
         }
     }
 
