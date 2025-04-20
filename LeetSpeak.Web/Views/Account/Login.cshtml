@@ -2,10 +2,10 @@
 
 <div class="row justify-content-center align-items-center vh-80">
     <div class="col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark-gray border-leet mb-4">
-            <div class="card-header bg-dark border-leet text-center py-4">
+        <div class="card bg-dark border-primary mb-4">
+            <div class="card-header bg-dark border-primary text-center py-4">
                 <div class="leet-logo mb-3">
-                    <i class="fas fa-terminal leet-icon me-2"></i>
+                    <i class="fas fa-terminal me-2 text-primary"></i>
                     <span class="font-monospace">
                         <span class="font-monospace">LeetSpeak<span class="text-primary">Pro</span></span>
                     </span>
@@ -16,26 +16,26 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="Email" class="form-control bg-darker border-leet text-light"
+                        <input asp-for="Email" class="form-control bg-darker border-primary text-light"
                                placeholder="name@example.com" autocomplete="username" />
                         <label asp-for="Email" class="text-muted">
-                            <i class="fas fa-envelope me-2 leet-icon"></i>Email Address
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address
                         </label>
-                        <span asp-validation-for="Email" class="text-leet small d-block mt-1"></span>
+                        <span asp-validation-for="Email" class="text-primary small d-block mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="Password" class="form-control bg-darker border-leet text-light"
+                        <input asp-for="Password" class="form-control bg-darker border-primary text-light"
                                placeholder="Password" type="password" autocomplete="current-password" />
                         <label asp-for="Password" class="text-muted">
-                            <i class="fas fa-lock me-2 leet-icon"></i>Password
+                            <i class="fas fa-lock me-2 text-primary"></i>Password
                         </label>
                         <span asp-validation-for="Password" class="text-leet small d-block mt-1"></span>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
-                            <input asp-for="RememberMe" class="form-check-input bg-darker border-leet" />
+                            <input asp-for="RememberMe" class="form-check-input bg-darker border-primary" />
                             <label asp-for="RememberMe" class="form-check-label text-muted">
                                 Remember Session
                             </label>
@@ -65,16 +65,12 @@
             min-height: 80vh;
         }
 
-        .border-leet {
-            border-color: #0af !important;
-        }
-
         .bg-darker {
             background-color: #1a1a1a;
         }
 
         .btn-leet {
-            background-color: #0af;
+            background-color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
             color: #000;
             font-weight: 600;
             letter-spacing: 1px;

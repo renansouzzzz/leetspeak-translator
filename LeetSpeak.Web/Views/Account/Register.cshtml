@@ -2,8 +2,8 @@
 
 <div class="row justify-content-center align-items-center vh-80">
     <div class="col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark-gray border-leet mb-4">
-            <div class="card-header bg-dark border-leet text-center py-4">
+        <div class="card bg-dark-gray border-primary mb-4">
+            <div class="card-header bg-dark border-primary text-center py-4">
                 <div class="leet-logo mb-3">
                     <i class="fas fa-terminal leet-icon me-2"></i>
                     <span class="font-monospace">
@@ -18,20 +18,20 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-4">
-                                <input asp-for="FirstName" class="form-control bg-darker border-leet text-light"
+                                <input asp-for="FirstName" class="form-control bg-darker border-primary text-light"
                                        placeholder="John" autocomplete="given-name" />
                                 <label asp-for="FirstName" class="text-muted">
-                                    <i class="fas fa-user me-2 leet-icon"></i>First Name
+                                    <i class="fas fa-user me-2 text-primary"></i>First Name
                                 </label>
                                 <span asp-validation-for="FirstName" class="text-leet small d-block mt-1"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-4">
-                                <input asp-for="LastName" class="form-control bg-darker border-leet text-light"
+                                <input asp-for="LastName" class="form-control bg-darker border-primary text-light"
                                        placeholder="Doe" autocomplete="family-name" />
                                 <label asp-for="LastName" class="text-muted">
-                                    <i class="fas fa-user me-2 leet-icon"></i>Last Name
+                                    <i class="fas fa-user me-2 text-primary"></i>Last Name
                                 </label>
                                 <span asp-validation-for="LastName" class="text-leet small d-block mt-1"></span>
                             </div>
@@ -39,28 +39,28 @@
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="Email" class="form-control bg-darker border-leet text-light"
+                        <input asp-for="Email" class="form-control bg-darker border-primary text-light"
                                placeholder="name@example.com" autocomplete="username" />
                         <label asp-for="Email" class="text-muted">
-                            <i class="fas fa-envelope me-2 leet-icon"></i>Email Address
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address
                         </label>
                         <span asp-validation-for="Email" class="text-leet small d-block mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="Password" class="form-control bg-darker border-leet text-light"
+                        <input asp-for="Password" class="form-control bg-darker border-primary text-light"
                                placeholder="Password" type="password" autocomplete="new-password" />
                         <label asp-for="Password" class="text-muted">
-                            <i class="fas fa-key me-2 leet-icon"></i>Password
+                            <i class="fas fa-key me-2 text-primary"></i>Password
                         </label>
                         <span asp-validation-for="Password" class="text-leet small d-block mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="ConfirmPassword" class="form-control bg-darker border-leet text-light"
+                        <input asp-for="ConfirmPassword" class="form-control bg-darker border-primary text-light"
                                placeholder="Confirm Password" type="password" autocomplete="new-password" />
                         <label asp-for="ConfirmPassword" class="text-muted">
-                            <i class="fas fa-key me-2 leet-icon"></i>Confirm Password
+                            <i class="fas fa-key me-2 text-primary"></i>Confirm Password
                         </label>
                         <span asp-validation-for="ConfirmPassword" class="text-leet small d-block mt-1"></span>
                     </div>
@@ -69,7 +69,7 @@
                         REGISTER
                     </button>
 
-                    <div class="text-center mt-4 pt-3 border-top border-leet">
+                    <div class="text-center mt-4 pt-3 border-top border-primary">
                         <p class="text-muted mb-2">Already have an account?</p>
                         <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]"
                            class="btn btn-outline-leet">
@@ -88,16 +88,12 @@
             min-height: 80vh;
         }
 
-        .border-leet {
-            border-color: #0af !important;
-        }
-
         .bg-darker {
             background-color: #1a1a1a;
         }
 
         .btn-leet {
-            background-color: #0af;
+            background-color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
             color: #000;
             font-weight: 600;
             letter-spacing: 1px;

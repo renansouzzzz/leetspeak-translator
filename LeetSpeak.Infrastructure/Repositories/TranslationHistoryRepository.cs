@@ -12,9 +12,9 @@ public class TranslationHistoryRepository : ITranslationHistoryRepository
     public IQueryable<Translation> GetAllById(string userId)
     {
         return _context.Translations
+        .AsNoTracking()
         .Where(t => t.UserId == userId)
-        .OrderByDescending(t => t.TranslationDate)
-        .AsNoTracking();
+        .OrderByDescending(t => t.TranslationDate);
     }
 
     public async Task<IEnumerable<Translation>> GetFilteredAsync(
@@ -34,6 +34,7 @@ public class TranslationHistoryRepository : ITranslationHistoryRepository
     public IQueryable<Translation> BuildFilterQuery(string userId, HistoryFilter filter)
     {
         var query = _context.Translations
+            .AsNoTracking()
             .Where(t => t.UserId == userId)
             .AsQueryable();
 

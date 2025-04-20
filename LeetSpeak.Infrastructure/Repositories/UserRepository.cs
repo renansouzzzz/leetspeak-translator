@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-public class UserRepository : IUserRepository
+﻿public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
 
