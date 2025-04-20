@@ -51,7 +51,7 @@ public class TranslateController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetRecentHistory()
+    public IActionResult GetRecentHistory()
     {
         try
         {
