@@ -1,0 +1,133 @@
+﻿@model HistoryFilterViewModel
+
+<div class="container mt-4">
+    <div class="card bg-dark border-primary">
+        <div class="card-header bg-dark border-primary d-flex justify-content-between">
+            <h3><i class="fas fa-filter me-2"></i>History Filters</h3>
+            <a href="@Url.Action("Index", "Translate")" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+        <div class="card-body">
+            <form id="filterForm" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-light">Search Term</label>
+                        <input asp-for="SearchTerm"
+                               class="form-control bg-dark text-light border-primary focus-dark"
+                               placeholder="Enter search term...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-light">From Date</label>
+                        <input asp-for="StartDate"
+                               type="date"
+                               class="form-control bg-dark text-light border-primary focus-dark">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-light">To Date</label>
+                        <input asp-for="EndDate"
+                               type="date"
+                               class="form-control bg-dark text-light border-primary focus-dark">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Apply Filters
+                    </button>
+                </div>
+            </form>
+
+            <div id="resultsContainer">
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-search fa-2x mb-3"></i>
+                    <p>Apply filters to see results</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#filterForm').submit(function(e) {
+                e.preventDefault();
+                loadResults();
+            });
+
+            function loadResults() {
+                const formData = $('#filterForm').serialize();
+
+                $('#resultsContainer').html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary"></div>
+                        <p class="mt-2">Loading results...</p>
+                    </div>
+                `);
+
+                $.ajax({
+                    url: '@Url.Action("GetHistory", "History")',
+                    type: 'GET',
+                    data: formData,
+                    success: function(data) {
+                        renderResults(data);
+                    },
+                    error: function(xhr) {
+                        $('#resultsContainer').html(`
+                            <div class="alert alert-danger">
+                                Failed to load results. Please try again.
+                            </div>
+                        `);
+                    }
+                });
+            }
+
+            function renderResults(results) {
+                let html = '';
+
+                if (results.length === 0) {
+                    html = `
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                            <p>No results found with these filters</p>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Original Text</th>
+                                        <th>Translated Text</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${results.map(item => `
+                                        <tr>
+                                            <td>${new Date(item.translationDate).toLocaleString()}</td>
+                                            <td>${escapeHtml(item.originalText)}</td>
+                                            <td class="text-leet">${escapeHtml(item.translatedText)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
+                $('#resultsContainer').html(html);
+            }
+
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        });
+    </script>
+}

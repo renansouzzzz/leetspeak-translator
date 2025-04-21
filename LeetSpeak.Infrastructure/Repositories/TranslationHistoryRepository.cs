@@ -1,12 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using Dapper;
 
 public class TranslationHistoryRepository : ITranslationHistoryRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _config;
 
-    public TranslationHistoryRepository(ApplicationDbContext context)
+    public TranslationHistoryRepository(ApplicationDbContext context, IConfiguration config)
     {
         _context = context;
+        _config = config;
     }
 
     public IQueryable<Translation> GetAllById(string userId)
@@ -17,44 +22,22 @@ public class TranslationHistoryRepository : ITranslationHistoryRepository
         .OrderByDescending(t => t.TranslationDate);
     }
 
-    public async Task<IEnumerable<Translation>> GetFilteredAsync(
-        string userId,
-        HistoryFilter filter)
+    public async Task<IEnumerable<Translation>> GetUserHistoryViaStoredProcAsync(
+        HistoryFilter filter,
+        string userId)
     {
-        var query = BuildFilterQuery(userId, filter);
-        return await query.ToListAsync();
-    }
+        await using var connection = new MySqlConnection(_config.GetConnectionString("DefaultConnection"));
 
-    public async Task<int> CountAsync(string userId, HistoryFilter filter)
-    {
-        var query = BuildFilterQuery(userId, filter);
-        return await query.CountAsync();
-    }
-
-    public IQueryable<Translation> BuildFilterQuery(string userId, HistoryFilter filter)
-    {
-        var query = _context.Translations
-            .AsNoTracking()
-            .Where(t => t.UserId == userId)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
-        {
-            query = query.Where(t =>
-                t.OriginalText.Contains(filter.SearchTerm) ||
-                t.TranslatedText.Contains(filter.SearchTerm));
-        }
-
-        if (filter.StartDate.HasValue)
-        {
-            query = query.Where(t => t.TranslationDate >= filter.StartDate.Value);
-        }
-
-        if (filter.EndDate.HasValue)
-        {
-            query = query.Where(t => t.TranslationDate <= filter.EndDate.Value);
-        }
-
-        return query.OrderByDescending(t => t.TranslationDate);
+        return await connection.QueryAsync<Translation>(
+            "GetFilteredTranslations",
+            new
+            {
+                p_UserId = userId,
+                p_SearchTerm = string.IsNullOrEmpty(filter.SearchTerm) ? null : filter.SearchTerm,
+                p_StartDate = filter.StartDate,
+                p_EndDate = filter.EndDate
+            },
+            commandType: CommandType.StoredProcedure
+        );
     }
 }

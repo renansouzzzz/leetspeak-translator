@@ -11,47 +11,30 @@
         _logger = logger;
     }
 
-    public IEnumerable<Translation> GetUserHistoryAsync(HistoryFilter filter, string userId)
+    public async Task<IEnumerable<Translation>> GetUserHistoryAsync(
+        HistoryFilter filter,
+        string userId)
     {
         try
         {
-            _logger.LogInformation($"Fetching translation history for user {userId} with filters: " +
-                $"Search='{filter.SearchTerm}', StartDate={filter.StartDate}, EndDate={filter.EndDate}");
+            _logger.LogInformation(
+                "Fetching translation history for user {UserId} with filters: {@Filter}",
+                userId, filter);
 
-            var query = _translationHistoryRepository.GetAllById(userId)
-                .Where(t => t.UserId == userId)
-                .OrderByDescending(t => t.TranslationDate);
+            var results = await _translationHistoryRepository.GetUserHistoryViaStoredProcAsync(filter, userId);
 
-            if (!string.IsNullOrEmpty(filter.SearchTerm))
-            {
-                query = (IOrderedQueryable<Translation>)query.Where(t =>
-                    t.OriginalText.Contains(filter.SearchTerm) ||
-                    t.TranslatedText.Contains(filter.SearchTerm));
-
-                _logger.LogDebug($"Applied search filter: {filter.SearchTerm}");
-            }
-
-            if (filter.StartDate.HasValue)
-            {
-                query = (IOrderedQueryable<Translation>)query.Where(t => t.TranslationDate >= filter.StartDate.Value.Date);
-                _logger.LogDebug($"Applied start date filter: {filter.StartDate.Value.Date}");
-            }
-
-            if (filter.EndDate.HasValue)
-            {
-                var endOfDay = filter.EndDate.Value.Date.AddDays(1).AddTicks(-1);
-                query = (IOrderedQueryable<Translation>)query.Where(t => t.TranslationDate <= endOfDay);
-                _logger.LogDebug($"Applied end date filter: {endOfDay}");
-            }
-
-            var results = query.ToList();
-            _logger.LogInformation($"Found {results.Count} history items for user {userId}");
+            _logger.LogInformation(
+                "Found {Count} records for user {UserId}",
+                results.Count(), userId);
 
             return results;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error retrieving history for user {userId}");
+            _logger.LogError(ex,
+                "Failed to retrieve history for user {UserId}. Filters: {@Filter}",
+                userId, filter);
+
             return Enumerable.Empty<Translation>();
         }
     }

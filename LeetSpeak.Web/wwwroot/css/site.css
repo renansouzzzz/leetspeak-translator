@@ -96,3 +96,23 @@ textarea.form-control {
         padding: 1rem;
     }
 }
+
+.table-dark {
+    --bs-table-bg: #1a1a1a;
+    --bs-table-striped-bg: #222;
+    --bs-table-hover-bg: #2a2a2a;
+}
+
+.page-item.active .page-link {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.page-link {
+    color: var(--bs-primary);
+}
+
+    .page-link:hover {
+        color: var(--bs-primary);
+        background-color: rgba(123, 44, 191, 0.1);
+    }
