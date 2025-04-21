@@ -1,4 +1,4 @@
-namespace LeetSpeakTranslator.Models
+namespace LeetSpeak.Web.Models.Error
 {
     public class ErrorViewModel
     {
