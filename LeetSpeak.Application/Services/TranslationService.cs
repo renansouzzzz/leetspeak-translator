@@ -1,20 +1,17 @@
 ﻿public class TranslationService : ITranslationService
 {
     private readonly ITranslationRepository _translationRepository;
-    private readonly IUserRepository _userRepository;
     private readonly ITranslationResultAdapter _adapter;
     private readonly IFunTranslationApiService _apiService;
     private readonly ILogger<TranslationService> _logger;
 
     public TranslationService(
         ITranslationRepository translationRepository,
-        IUserRepository userRepository,
         ITranslationResultAdapter adapter,
         IFunTranslationApiService apiService,
         ILogger<TranslationService> logger)
     {
         _translationRepository = translationRepository;
-        _userRepository = userRepository;
         _adapter = adapter;
         _apiService = apiService;
         _logger = logger;

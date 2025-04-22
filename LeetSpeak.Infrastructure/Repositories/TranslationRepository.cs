@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-public class TranslationRepository : ITranslationRepository
+﻿public class TranslationRepository : ITranslationRepository
 {
     private readonly ApplicationDbContext _context;
 

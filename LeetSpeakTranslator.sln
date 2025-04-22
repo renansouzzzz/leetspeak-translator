@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Tests", "LeetSpeak.Tests\LeetSpeak.Tests.csproj", "{90A088EA-F88C-4472-86E0-4B2608726CB5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Core", "LeetSpeak.Core\LeetSpeak.Core.csproj", "{8F22A8FC-B7C5-490F-A3FD-35E684E5AB9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Application", "LeetSpeak.Application\LeetSpeak.Application.csproj", "{7724EB78-D99B-41B5-930E-67E22487AAB3}"
@@ -13,16 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Web", "LeetSpeak.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Infrastructure", "LeetSpeak.Infrastructure\LeetSpeak.Infrastructure.csproj", "{71D367AE-3EB8-4133-8564-EE84AA722100}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetSpeak.Tests", "LeetSpeak.Tests\LeetSpeak.Tests.csproj", "{4C79008D-A26C-4884-986D-AFA3EBEC9479}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{90A088EA-F88C-4472-86E0-4B2608726CB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90A088EA-F88C-4472-86E0-4B2608726CB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90A088EA-F88C-4472-86E0-4B2608726CB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90A088EA-F88C-4472-86E0-4B2608726CB5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F22A8FC-B7C5-490F-A3FD-35E684E5AB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F22A8FC-B7C5-490F-A3FD-35E684E5AB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F22A8FC-B7C5-490F-A3FD-35E684E5AB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{71D367AE-3EB8-4133-8564-EE84AA722100}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71D367AE-3EB8-4133-8564-EE84AA722100}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71D367AE-3EB8-4133-8564-EE84AA722100}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C79008D-A26C-4884-986D-AFA3EBEC9479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C79008D-A26C-4884-986D-AFA3EBEC9479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C79008D-A26C-4884-986D-AFA3EBEC9479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C79008D-A26C-4884-986D-AFA3EBEC9479}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
