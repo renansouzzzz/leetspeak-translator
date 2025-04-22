@@ -42,7 +42,9 @@ public class TranslationServiceTests
                     });
 
         var mockRepo = new Mock<ITranslationRepository>();
-        Translation savedTranslation = null;
+
+        Translation savedTranslation = null!;
+
         mockRepo.Setup(x => x.AddAsync(It.IsAny<Translation>()))
                .Callback<Translation>(t => savedTranslation = t)
                .Returns(Task.CompletedTask);
@@ -84,18 +86,18 @@ public class TranslationServiceTests
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains($"Translating text: '{text}'")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains($"Translating text: '{text}'")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
             Times.Once);
 
         _mockLogger.Verify(
             x => x.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("API Response:")),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains("API Response:")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()!),
             Times.Once);
     }
 
