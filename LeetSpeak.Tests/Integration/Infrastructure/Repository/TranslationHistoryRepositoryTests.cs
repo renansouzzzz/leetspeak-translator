@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 
+namespace LeetSpeak.Tests.Integration.Infrastructure.Repository;
+
 public class TranslationHistoryRepositoryTests
 {
     private readonly TranslationHistoryRepository _repository;
@@ -68,7 +70,7 @@ public class TranslationHistoryRepositoryTests
             It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, _) => true),
             It.IsAny<Exception>(),
-            It.Is<Func<It.IsAnyType, Exception, string>>((_, _) => true)))
+            It.Is<Func<It.IsAnyType, Exception, string>>((_, _) => true)!))
             .Callback(new InvocationAction(invocation =>
             {
                 var logLevel = (LogLevel)invocation.Arguments[0];

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 
+namespace LeetSpeak.Tests.Integration.Application.Services;
 public class TranslationHistoryServiceTests
 {
     private readonly Mock<ITranslationHistoryRepository> _mockRepo;
@@ -14,7 +15,7 @@ public class TranslationHistoryServiceTests
         _service = new TranslationHistoryService(_mockRepo.Object, _mockLogger.Object);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Returns user history when repository has matching translations")]
     public async Task GetUserHistoryAsync_ReturnsResults_WhenRepositoryReturnsData()
     {
         var userId = Guid.NewGuid().ToString();

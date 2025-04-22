@@ -11,10 +11,4 @@
     {
         return await _context.Users.FindAsync(userId);
     }
-
-    public async Task UpdateAsync(ApplicationUser user)
-    {
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-    }
 }

@@ -19,6 +19,12 @@
 
     public async Task<TranslationResult> TranslateToLeetSpeakAsync(string text, string userId)
     {
+        if (string.IsNullOrWhiteSpace(text))
+            throw new ArgumentException("Text cannot be null or empty", nameof(text));
+
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("User ID cannot be null or empty", nameof(userId));
+
         _logger.LogInformation($"Translating text: '{text}' for user {userId}");
 
         var apiResponse = await _apiService.TranslateToLeetSpeakAsync(text);
