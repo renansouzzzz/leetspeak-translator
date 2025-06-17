@@ -9,7 +9,7 @@
 --BEGIN
 --    SELECT * FROM Translations
 --    WHERE 
---        (p_UserId IS NULL OR UserId = p_UserId)  -- Adicionando filtro de UserId
+--        (p_UserId IS NULL OR UserId = p_UserId)
 --        AND (p_SearchTerm IS NULL OR 
 --            OriginalText LIKE CONCAT('%', p_SearchTerm, '%') OR 
 --            TranslatedText LIKE CONCAT('%', p_SearchTerm, '%'))
